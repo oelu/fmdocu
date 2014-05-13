@@ -34,7 +34,8 @@ def print_markdown(confobj):
             # with break of |
             print "|" + elem.replace("set", "") + "|"
 
-def print_routes(configobj)
+
+def print_routes(configobj):
     """
     The routes in fortigate configuration objects
     need special treatment.
@@ -43,6 +44,23 @@ def print_routes(configobj)
     """
     # TODO: implement function
     return configobj
+
+
+def print_header():
+    """
+    prints markdown header for documentation
+    """
+    # TODO: implement function
+    return None
+
+
+def print_footer():
+    """
+    prints markdown footer for documentation
+    """
+    # TODO: implement function
+    return None
+
 
 def main():
     """
@@ -63,8 +81,10 @@ def main():
     nics = parse.find_all_children('config system interface')
     ha = parse.find_all_children('config system ha')
     access_profiles = parse.find_all_children('config system accprofile')
+    confglobal = parse.find_all_children('config sstem global')
 
     print_markdown(routes)
+    print_markdown(nics)
 
 
 if __name__ == "__main__":
