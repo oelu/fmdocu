@@ -1,7 +1,7 @@
 #!/usr/local/bin/python2.7
 """ Fortimail Configuration Report
 Usage:
-    fmreport.py [-f <file> | --file <file>]
+    fmdocu.py [-f <file> | --file <file>]
 
 Options:
     -h --help  shows help message
@@ -20,6 +20,7 @@ def print_markdown_report():
     prints fortimail configuration report in markdown format
     """
     return None
+
 
 def print_markdown(confobj):
     """
@@ -87,6 +88,7 @@ def get_single_setvalue_from_file(searchstr, configfile):
     configfile.close()
     return False
 
+
 def get_config_section_as_list(data, section):
     """
     reads configuration file and returns a list of
@@ -113,7 +115,7 @@ def main():
     configfile = arguments['<file>']
     # default value for testing
     if configfile is None:
-        configfile = 'fmlta.cfg'
+        configfile = 'fml.cfg'
 
     # assign single values
     hostname = get_single_setvalue_from_file("hostname", configfile)

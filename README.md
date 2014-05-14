@@ -1,20 +1,15 @@
-# Fortimail Configuration Parser
-Parsers a Fortimail Configuration to a dictionary. Prints out a Configuration Report 
-in Markdown Syntax.
+# Fortimail Configuration Documentation
+Prints a configuration report in markdown
 
-## Configuration Sections
+## Usage
+  » ./fmdocu.py -h
+  Fortimail Configuration Report
+  Usage:
+     fmdocu.py [-f <file> | --file <file>]
+     
+     Options:
+         -h --help  shows help message
+     </file></file>]
 
-### Misc
-* hamode
+## Example Session
 
-# Network
-## Network Interfaces
-* Ports
-
-## Routes
-* Routes with default route
-
-# MTA
-## Mail Queues
-## Sessions
-## Domain Configurations
