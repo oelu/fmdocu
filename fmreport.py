@@ -5,9 +5,6 @@ Usage:
 
 Options:
     -h --help  shows help message
-    --author <author>  include author name in report
-    --mail <mail>  include author mail in report
-    --company <company>  include company name in report
 """
 __author__ = 'olivier'
 
@@ -114,21 +111,18 @@ def main():
     # gets arguments from docopt
     arguments = docopt(__doc__)
     configfile = arguments['<file>']
-    # author = arguments['<author>']
-    # mail = arguments['authormail']
-    # company = arguments['company']
     # default value for testing
     if configfile is None:
         configfile = 'fmlta.cfg'
 
     # assign single values
-    HOSTNAME = get_single_setvalue_from_file("hostname", configfile)
+    hostname = get_single_setvalue_from_file("hostname", configfile)
 
     # assign config lists
-    with open(configfile, 'r+') as cf:
-        data = mmap.mmap(cf.fileno(), 0)
+    with open(configfile, 'r+') as filehandle:
+        data = mmap.mmap(filehandle.fileno(), 0)
         confglobal = get_config_section_as_list(data, 'config system global')
-        ha = get_config_section_as_list(data, 'config system ha')
+        highavailability = get_config_section_as_list(data, 'config system ha')
         dns = get_config_section_as_list(data, 'config system dns')
         routes = get_config_section_as_list(data, 'config system route')
         nics = get_config_section_as_list(data, 'config system interface')
@@ -137,18 +131,19 @@ def main():
         session = get_config_section_as_list \
             (data, 'config profile session')
         antivirus = get_config_section_as_list(data, 'config profile antivirus')
-        domainassociation = get_config_section_as_list(data, 'config  domain-association')
+        domainassociation = get_config_section_as_list \
+            (data, 'config  domain-association')
 
     # get values from user
     # TODO: add interactive option and gather input from user
     # customername = raw_input("please enter customer name: ")
 
-    print_header(HOSTNAME)
+    print_header(hostname)
     print "# General Configuration"
     print "## Global Configuration"
     print_markdown(confglobal)
     print "## High Availability (HA)"
-    print_markdown(ha)
+    print_markdown(highavailability)
     print "# Network"
     print "# DNS"
     print_markdown(dns)
