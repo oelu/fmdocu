@@ -96,6 +96,19 @@ def get_single_setvalue_from_file(searchstr, file):
     configfile.close()
     return False
 
+def get_config_section_as_list(configfile, section):
+    """
+    reads configuration file and returns a list of
+    a section.
+
+    example sections are:
+        config system global
+        config system dns
+        etc..
+    """
+    return None
+
+
 def main():
     """
     main function
@@ -105,7 +118,8 @@ def main():
     configfile = arguments['<file>']
     # default value for testing
     if configfile is None:
-        configfile = 'fml.cfg'
+        #configfile = 'fmltawopa.cfg'
+        configfile = 'fmlta.cfg'
 
     # parse configuration file
     parse = CiscoConfParse(configfile)
@@ -114,13 +128,14 @@ def main():
     HOSTNAME = get_single_setvalue_from_file("hostname", configfile)
 
     # assigns lists to config sections
-    confglobal = parse.find_all_children('config system global')
-    ha = parse.find_all_children('config system ha')
-    dns = parse.find_all_children('config system dns')
+    # confglobal = parse.find_all_children('config system global')
+    confglobal = parse.find_blocks('config system global')
+    ha = parse.find_blocks('config system ha')
+    dns = parse.find_blocks('config system dns')
     routes = parse.find_all_children('config system route')
     nics = parse.find_all_children('config system interface')
-    access_profiles = parse.find_all_children('config system accprofile')
-    mailserver = parse.find_all_children('config system mailserver')
+    #access_profiles = parse.find_blocks('config system accprofile')
+    mailserver = parse.find_blocks('config system mailserver')
 
 
     # get values from user
