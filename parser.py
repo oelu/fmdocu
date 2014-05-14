@@ -8,11 +8,9 @@ __author__ = 'olivier'
 
 # import statements
 from docopt import docopt
-from ciscoconfparse import CiscoConfParse
 import datetime
-import pprint
-import shlex
 import re
+import mmap
 
 
 def print_markdown_report():
@@ -96,7 +94,7 @@ def get_single_setvalue_from_file(searchstr, file):
     configfile.close()
     return False
 
-def get_config_section_as_list(configfile, section):
+def get_config_section_as_list(data, section):
     """
     reads configuration file and returns a list of
     a section.
@@ -106,7 +104,11 @@ def get_config_section_as_list(configfile, section):
         config system dns
         etc..
     """
-    return None
+    configsection = [section]
+    searchstring = section + "(.*?)end"
+    for result in re.findall(searchstring, data, re.S):
+        configsection.extend(result.split('\n'))
+    return configsection
 
 
 def main():
@@ -118,25 +120,21 @@ def main():
     configfile = arguments['<file>']
     # default value for testing
     if configfile is None:
-        #configfile = 'fmltawopa.cfg'
         configfile = 'fmlta.cfg'
-
-    # parse configuration file
-    parse = CiscoConfParse(configfile)
 
     # assign single values
     HOSTNAME = get_single_setvalue_from_file("hostname", configfile)
 
-    # assigns lists to config sections
-    # confglobal = parse.find_all_children('config system global')
-    confglobal = parse.find_blocks('config system global')
-    ha = parse.find_blocks('config system ha')
-    dns = parse.find_blocks('config system dns')
-    routes = parse.find_all_children('config system route')
-    nics = parse.find_all_children('config system interface')
-    #access_profiles = parse.find_blocks('config system accprofile')
-    mailserver = parse.find_blocks('config system mailserver')
-
+    # assign config lists
+    with open(configfile, 'r+') as cf:
+        data = mmap.mmap(cf.fileno(), 0)
+        confglobal = get_config_section_as_list(data, 'config system global')
+        ha = get_config_section_as_list(data, 'config system ha')
+        dns = get_config_section_as_list(data, 'config system dns')
+        routes = get_config_section_as_list(data, 'config system route')
+        nics = get_config_section_as_list(data, 'config system interface')
+        mailserver = get_config_section_as_list \
+            (data, 'config system mailserver')
 
     # get values from user
     # TODO: add interactive option and gather input from user
