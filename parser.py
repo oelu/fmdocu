@@ -47,15 +47,17 @@ def print_routes(configobj):
     return configobj
 
 
-def print_header():
+def print_header(HOSTNAME):
     """
     prints markdown header for documentation
     """
     DATE = datetime.date.today().strftime("%d-%m-%Y")
-    HOSTNAME = ''
     HEADER = '''
-    Fortimail Configuration Report
+# Fortimail Configuration Report
+DATE: %s
+Hostname: %s
     '''
+    print HEADER % (DATE, HOSTNAME)
     # TODO: implement function
     return None
 
@@ -98,7 +100,6 @@ def main():
 
     # assign single values
     HOSTNAME = get_single_setvalue_from_file("hostname", configfile)
-    print HOSTNAME
 
     # assigns lists to config sections
     routes = parse.find_all_children('config system route')
@@ -107,6 +108,7 @@ def main():
     access_profiles = parse.find_all_children('config system accprofile')
     confglobal = parse.find_all_children('config system global')
 
+    print_header(HOSTNAME)
     print_markdown(routes)
     print_markdown(nics)
 
