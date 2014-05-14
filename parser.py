@@ -11,6 +11,7 @@ from docopt import docopt
 from ciscoconfparse import CiscoConfParse
 import datetime
 import pprint
+import shlex
 import re
 
 
@@ -25,15 +26,23 @@ def print_markdown(confobj):
     prints a markdown representation of a fortiguard
     configuration object
     """
+    # elements that should not be printed
+    blacklist = ["password"]
+
     for elem in confobj:
-        if "config" in elem:
+        # add if clause to check for blacklist
+        if any (bl in elem for bl in blacklist):
+            pass
+        elif elem.startswith("config"):
             print "|" + elem.replace("config", "") + "|"
-        elif "edit" in elem:
+        elif elem.startswith("  edit"):
             print "|" + elem.replace("edit", "") + "|"
-        elif "set" in elem:
-            # TODO: has to be splitted in key and value words
-            # with break of |
-            print "|" + elem.replace("set", "") + "|"
+        elif elem.startswith("    set") or elem.startswith("  set"):
+            elem = elem.replace("set ", "").replace("  ", "")
+            # splits elements in key and value pairs
+            # to be separated with a |
+            key, value = elem.split(" ", 1)
+            print "|" + key + "|" + value + "|"
 
 
 def print_routes(configobj):
@@ -54,12 +63,13 @@ def print_header(HOSTNAME):
     DATE = datetime.date.today().strftime("%d-%m-%Y")
     HEADER = '''
 # Fortimail Configuration Report
-DATE: %s
+----
+Author: support
+Date: %s
 Hostname: %s
+----
     '''
     print HEADER % (DATE, HOSTNAME)
-    # TODO: implement function
-    return None
 
 
 def print_footer():
@@ -109,7 +119,15 @@ def main():
     confglobal = parse.find_all_children('config system global')
 
     print_header(HOSTNAME)
+    print "# General Configuration"
+    print "## Global Configuration"
+    print_markdown(confglobal)
+    print "## High Availability (HA)"
+    print_markdown(ha)
+    print "# Network"
+    print "## Routes"
     print_markdown(routes)
+    print "## Network Interfaces"
     print_markdown(nics)
 
 
