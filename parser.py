@@ -9,6 +9,7 @@ __author__ = 'olivier'
 # import statements
 from docopt import docopt
 from ciscoconfparse import CiscoConfParse
+import datetime
 import pprint
 import re
 
@@ -50,6 +51,11 @@ def print_header():
     """
     prints markdown header for documentation
     """
+    DATE = datetime.date.today().strftime("%d-%m-%Y")
+    HOSTNAME = ''
+    HEADER = '''
+    Fortimail Configuration Report
+    '''
     # TODO: implement function
     return None
 
@@ -61,6 +67,20 @@ def print_footer():
     # TODO: implement function
     return None
 
+
+def get_single_setvalue_from_file(searchstr, file):
+    """
+    used to get a single value from file
+    """
+    configfile = open(file, "r")
+    for line in configfile:
+        if searchstr in line:
+            rstring = line.replace("  ", "")\
+                .replace("set ", "")\
+                .replace(searchstr + " ", "")
+            return rstring
+    # if nothing is found
+    return False
 
 def main():
     """
@@ -76,12 +96,16 @@ def main():
     # parse configuration file
     parse = CiscoConfParse(configfile)
 
+    # assign single values
+    HOSTNAME = get_single_setvalue_from_file("hostname", configfile)
+    print HOSTNAME
+
     # assigns lists to config sections
     routes = parse.find_all_children('config system route')
     nics = parse.find_all_children('config system interface')
     ha = parse.find_all_children('config system ha')
     access_profiles = parse.find_all_children('config system accprofile')
-    confglobal = parse.find_all_children('config sstem global')
+    confglobal = parse.find_all_children('config system global')
 
     print_markdown(routes)
     print_markdown(nics)
