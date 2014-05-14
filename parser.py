@@ -42,7 +42,7 @@ def print_markdown(confobj):
             # splits elements in key and value pairs
             # to be separated with a |
             key, value = elem.split(" ", 1)
-            print "|" + key + "|" + value + "|"
+            print "|" + key + " | " + value + "|"
 
 
 def print_routes(configobj):
@@ -90,8 +90,10 @@ def get_single_setvalue_from_file(searchstr, file):
             rstring = line.replace("  ", "")\
                 .replace("set ", "")\
                 .replace(searchstr + " ", "")
+            configfile.close()
             return rstring
     # if nothing is found
+    configfile.close()
     return False
 
 def main():
@@ -114,6 +116,7 @@ def main():
     # assigns lists to config sections
     routes = parse.find_all_children('config system route')
     nics = parse.find_all_children('config system interface')
+    dns = parse.find_all_children('config system dns')
     ha = parse.find_all_children('config system ha')
     access_profiles = parse.find_all_children('config system accprofile')
     confglobal = parse.find_all_children('config system global')
@@ -125,6 +128,8 @@ def main():
     print "## High Availability (HA)"
     print_markdown(ha)
     print "# Network"
+    print "# DNS"
+    print_markdown(dns)
     print "## Routes"
     print_markdown(routes)
     print "## Network Interfaces"
