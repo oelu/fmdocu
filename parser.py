@@ -114,12 +114,18 @@ def main():
     HOSTNAME = get_single_setvalue_from_file("hostname", configfile)
 
     # assigns lists to config sections
+    confglobal = parse.find_all_children('config system global')
+    ha = parse.find_all_children('config system ha')
+    dns = parse.find_all_children('config system dns')
     routes = parse.find_all_children('config system route')
     nics = parse.find_all_children('config system interface')
-    dns = parse.find_all_children('config system dns')
-    ha = parse.find_all_children('config system ha')
     access_profiles = parse.find_all_children('config system accprofile')
-    confglobal = parse.find_all_children('config system global')
+    mailserver = parse.find_all_children('config system mailserver')
+
+
+    # get values from user
+    # TODO: add interactive option and gather input from user
+    # customername = raw_input("please enter customer name: ")
 
     print_header(HOSTNAME)
     print "# General Configuration"
@@ -134,6 +140,8 @@ def main():
     print_markdown(routes)
     print "## Network Interfaces"
     print_markdown(nics)
+    print "# Mailserver"
+    print_markdown(mailserver)
 
 
 if __name__ == "__main__":
