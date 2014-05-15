@@ -37,15 +37,17 @@ def print_markdown(confobj):
         elif elem.startswith("next"):
             pass
         elif elem.startswith("config"):
-            print "|" + elem.replace("config", "") + "|"
+            elemstr = '| {} |'.format(elem.replace("config", ""))
+            print elemstr
         elif elem.startswith("  edit"):
-            print "|" + elem.replace("edit", "") + "|"
+            elemstr = '| {} |'.format(elem.replace("edit", ""))
         elif elem.startswith("    set") or elem.startswith("  set"):
             elem = elem.replace("set ", "").replace("  ", "")
             # splits elements in key and value pairs
             # to be separated with a |
             key, value = elem.split(" ", 1)
-            print "|" + key + " | " + value + "|"
+            elemstr = '| {} | {} |'.format(key, value)
+            print elemstr
 
 
 def print_header(hostname):
@@ -120,9 +122,11 @@ def main():
     # assign single values
     hostname = get_single_setvalue_from_file("hostname", configfile)
 
-    # assign config lists
     with open(configfile, 'r+') as filehandle:
+        # open file in memory
         data = mmap.mmap(filehandle.fileno(), 0)
+
+        # assign config lists
         confglobal = get_config_section_as_list(data, 'config system global')
         highavailability = get_config_section_as_list(data, 'config system ha')
         dns = get_config_section_as_list(data, 'config system dns')
@@ -144,21 +148,29 @@ def main():
     print "# General Configuration"
     print "## Global Configuration"
     print_markdown(confglobal)
+
     print "## High Availability (HA)"
     print_markdown(highavailability)
+
     print "# Network"
     print "# DNS"
     print_markdown(dns)
+
     print "## Routes"
     print_markdown(routes)
+
     print "## Network Interfaces"
     print_markdown(nics)
+
     print "# Mailserver"
     print "## Session"
     print_markdown(session)
     print_markdown(mailserver)
+
     print '## Antivirus'
     print_markdown(antivirus)
+
+    print "## System Domains"
     print "## Domain Association"
     print_markdown(domainassociation)
 
