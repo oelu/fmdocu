@@ -12,8 +12,11 @@ Prints a configuration report in markdown
 
 ## Example Session
 generate the report: 
-$ fmdocu.py -f fml.cfg >> fmdocu.md
-$cat fmdocu.md
+
+    $ fmdocu.py -f fml.cfg >> fmdocu.md
+    $cat fmdocu.md
+
+This generates the output: 
 
     # Fortimail Configuration Report
     ----
